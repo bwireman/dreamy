@@ -1,11 +1,11 @@
-defmodule Anvil.MixProject do
+defmodule Dreamy.MixProject do
   use Mix.Project
 
   @pkg_version "0.1.0"
 
   def project do
     [
-      app: :anvil,
+      app: :dreamy,
       version: @pkg_version,
       elixir: "~> 1.12",
       deps: deps(),
@@ -14,11 +14,11 @@ defmodule Anvil.MixProject do
         extras: ["README.md"],
         main: "readme"
       ],
-      name: "censys_ex",
+      name: "dreamy",
       description: description(),
-      source_url: "https://github.com/bwireman/censys_ex",
-      homepage_url: "https://hexdocs.pm/censys_ex/readme.html",
-      package: package(),
+      source_url: "https://github.com/bwireman/dreamy",
+      homepage_url: "https://hexdocs.pm/dreamy/readme.html",
+      package: package()
     ]
   end
 
@@ -28,14 +28,15 @@ defmodule Anvil.MixProject do
 
   def aliases do
     [
-      quality: "do format --check-formatted, credo"
+      quality: "do clean, compile --warnings-as-errors, format --check-formatted, credo"
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.30", only: :dev, runtime: false}
     ]
   end
 
@@ -45,10 +46,10 @@ defmodule Anvil.MixProject do
 
   defp package() do
     [
-      name: "anvil",
+      name: "dreamy",
       licenses: ["MIT"],
       links: %{
-        "Github" => "https://github.com/bwireman/anvil"
+        "Github" => "https://github.com/bwireman/dreamy"
       }
     ]
   end

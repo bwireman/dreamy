@@ -1,14 +1,14 @@
-defmodule Anvil do
-  @module_doc """
-  Anvil provides useful macros & operators to make elixir even more dreamy
+defmodule Dreamy do
+  @moduledoc """
+  Dreamy provides useful macros & operators to make elixir even more dreamy
   """
 
   defmacro __using__(_) do
     quote do
       import IO, only: [inspect: 1, inspect: 2, inspect: 3]
-      alias Anvil.Types
+      alias Dreamy.Types
 
-      import Anvil,
+      import Dreamy,
         only: [
           fallthrough: 2,
           otherwise: 3,
@@ -38,13 +38,13 @@ defmodule Anvil do
 
   ## Examples
   ```
-  iex> use Anvil
+  iex> use Dreamy
   ...> fallthrough 1 do
   ...> 2 -> 2
   ...> end
   1
 
-  iex> use Anvil
+  iex> use Dreamy
   ...> fallthrough 2 do
   ...> 2 -> 2
   ...> end
@@ -70,13 +70,13 @@ defmodule Anvil do
 
   ## Examples
   ```
-  iex> use Anvil
+  iex> use Dreamy
   ...> otherwise 1, nil do
   ...> 2 -> 2
   ...> end
   nil
 
-  iex> use Anvil
+  iex> use Dreamy
   ...> otherwise 2, nil do
   ...> 2 -> 2
   ...> end
@@ -102,7 +102,7 @@ defmodule Anvil do
 
   ## Examples
   ```
-  iex> use Anvil
+  iex> use Dreamy
   iex> const :example, "XYZ"
   iex> @example
   "XYZ"
@@ -130,7 +130,7 @@ defmodule Anvil do
 
   ## Examples
   ```
-  iex> use Anvil
+  iex> use Dreamy
   iex> 2 |>
   iex> through(fn x -> x - 1 end) |>
   iex> through(fn x -> x - 1 end)
@@ -144,11 +144,11 @@ defmodule Anvil do
 
   ## Examples
   ```
-  iex> use Anvil
+  iex> use Dreamy
   ...> {:ok, "hello"} |> unwrap
   "hello"
 
-  iex> use Anvil
+  iex> use Dreamy
   ...> {:error, "world"} |> unwrap
   {:error, "world"}
   ```
@@ -162,11 +162,11 @@ defmodule Anvil do
 
   ## Examples
   ```
-  iex> use Anvil
+  iex> use Dreamy
   ...> {:ok, "hello"} |> unwrap_error
   {:ok, "hello"}
 
-  iex> use Anvil
+  iex> use Dreamy
   ...> {:error, "world"} |> unwrap_error
   "world"
   ```
@@ -180,13 +180,13 @@ defmodule Anvil do
 
   ## Examples
   ```
-  iex> use Anvil
+  iex> use Dreamy
   ...> {:ok, 1} ~>
   ...> fn x -> {:ok, x + 1} end ~>
   ...> fn y -> y + 1 end
   3
 
-  iex> use Anvil
+  iex> use Dreamy
   ...> {:error, 1} ~> fn x -> x + 1 end
   {:error, 1}
   ```
@@ -200,7 +200,7 @@ defmodule Anvil do
 
   ## Examples
   ```
-  iex> use Anvil
+  iex> use Dreamy
   ...> x = fn y -> y + 1 end
   ...> [1, 2]
   ...> >>> (&IO.inspect/1)
@@ -219,13 +219,13 @@ defmodule Anvil do
 
   ## Examples
   ```
-  iex> use Anvil
+  iex> use Dreamy
   ...> {:ok, 1} ~>>
   ...> fn {:ok, x} -> {:ok, x + 1} end ~>>
   ...> fn {:ok, x} -> {:ok, x + 1} end
   {:ok, 3}
 
-  iex> use Anvil
+  iex> use Dreamy
   ...> {:error, 1} ~>> fn {:ok, x} -> {:ok, x + 1} end
   {:error, 1}
   ```
@@ -240,11 +240,11 @@ defmodule Anvil do
 
   ## Examples
   ```
-  iex> use Anvil
+  iex> use Dreamy
   ...> flip({:ok, 3})
   {:error, 3}
 
-  iex> use Anvil
+  iex> use Dreamy
   ...> flip({:error, 3})
   {:ok, 3}
   ```

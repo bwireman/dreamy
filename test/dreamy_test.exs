@@ -1,7 +1,7 @@
-defmodule AnvilTest do
+defmodule DreamyTest do
   use ExUnit.Case
-  doctest Anvil
-  use Anvil
+  doctest Dreamy
+  use Dreamy
 
   test "fallthrough" do
     t =
