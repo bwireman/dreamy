@@ -1,6 +1,6 @@
 defmodule Dreamy do
   @moduledoc """
-  Dreamy provides useful macros & operators to make elixir even more dreamy
+  Dreamy provides useful macros, functions, types & operators to make elixir even more dreamy 😴
   """
 
   defmacro __using__(_) do
@@ -29,7 +29,11 @@ defmodule Dreamy do
     Useful Type definitions
     """
 
+    @typedoc "Type union of `t` & `nil`"
     @type nullable(t) :: t | nil
+    @typedoc "Type for documenting the value within an enumerable"
+    @type enumerable(_t) :: Enumerable.t()
+    @typedoc "Wrapper for :ok, and :error tuple"
     @type result(ok, error) :: {:ok, ok} | {:error, error}
   end
 
@@ -137,6 +141,7 @@ defmodule Dreamy do
   0
   ```
   """
+  @spec through(any(), (any() -> any())) :: any()
   def through(v, fun), do: fun.(v)
 
   @doc """
@@ -202,10 +207,11 @@ defmodule Dreamy do
   ```
   iex> use Dreamy
   ...> x = fn y -> y + 1 end
+  ...> y = fn z -> z * 2 end
   ...> [1, 2]
-  ...> >>> (&IO.inspect/1)
   ...> >>> x
-  [2, 3]
+  ...> >>> y
+  [4, 6]
   ```
   """
   defmacro enumerable >>> func do

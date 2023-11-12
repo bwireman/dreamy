@@ -28,7 +28,7 @@ defmodule Dreamy.MixProject do
 
   def aliases do
     [
-      quality: "do clean, compile --warnings-as-errors, format --check-formatted, credo"
+      quality: "do clean, compile --warnings-as-errors, format --check-formatted, credo --strict"
     ]
   end
 

@@ -1,7 +1,8 @@
 defmodule DreamyTest do
   use ExUnit.Case
-  doctest Dreamy
   use Dreamy
+
+  doctest Dreamy
 
   test "fallthrough" do
     t =
