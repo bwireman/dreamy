@@ -1,7 +1,7 @@
 defmodule Dreamy.MixProject do
   use Mix.Project
 
-  @pkg_version "0.1.0"
+  @pkg_version "0.1.1"
 
   def project do
     [
@@ -41,7 +41,7 @@ defmodule Dreamy.MixProject do
   end
 
   def description do
-    "Set of macros & operators to make Elixir even more dreamy"
+    "Dreamy provides useful macros, functions, types & operators to make elixir even more dreamy 😴"
   end
 
   defp package() do
