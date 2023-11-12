@@ -19,7 +19,8 @@ defmodule Dreamy do
           flip: 1,
           ~>: 2,
           ~>>: 2,
-          >>>: 2
+          >>>: 2,
+          |||: 2
         ]
     end
   end
@@ -258,4 +259,36 @@ defmodule Dreamy do
   @spec flip(Types.result(res, err)) :: Types.result(err, res) when res: var, err: var
   def flip({:ok, v}), do: {:error, v}
   def flip({:error, v}), do: {:ok, v}
+
+  @doc """
+  Function getting the first :ok result if one exists
+
+  ## Examples
+  ```
+  iex> use Dreamy
+  ...> {:ok, "success"} ||| {:ok, "success 2"}
+  {:ok, "success"}
+
+  iex> use Dreamy
+  ...> {:error, "oops"} ||| {:ok, "success 2"}
+  {:ok, "success 2"}
+
+  iex> use Dreamy
+  ...> {:error, "oops"} ||| {:error, "darn"}
+  {:error, "oops"}
+
+  iex> use Dreamy
+  ...> {:ok, "first try"} ||| {:error, "darn"} ||| {:ok, "finally"}
+  {:ok, "first try"}
+
+  iex> use Dreamy
+  ...> {:error, "oops"} ||| {:error, "darn"} ||| {:ok, "finally"}
+  {:ok, "finally"}
+  ```
+  """
+  @spec Types.result(a, err_a) ||| Types.result(b, any()) :: {:ok, a} | {:ok, b} | {:error, err_a}
+        when a: var, b: var, err_a: var
+  def ({:ok, _} = l) ||| _, do: l
+  def {:error, _} ||| ({:ok, _} = r), do: r
+  def ({:error, _} = l) ||| {:error, _}, do: l
 end

@@ -1,7 +1,7 @@
 defmodule Dreamy.MixProject do
   use Mix.Project
 
-  @pkg_version "0.1.1"
+  @pkg_version "0.1.2"
 
   def project do
     [
@@ -18,7 +18,8 @@ defmodule Dreamy.MixProject do
       description: description(),
       source_url: "https://github.com/bwireman/dreamy",
       homepage_url: "https://hexdocs.pm/dreamy/readme.html",
-      package: package()
+      package: package(),
+      dialyzer: dialyzer()
     ]
   end
 
@@ -28,7 +29,8 @@ defmodule Dreamy.MixProject do
 
   def aliases do
     [
-      quality: "do clean, compile --warnings-as-errors, format --check-formatted, credo --strict"
+      quality:
+        "do clean, compile --warnings-as-errors, format --check-formatted, dialyzer, credo --strict"
     ]
   end
 
@@ -36,7 +38,14 @@ defmodule Dreamy.MixProject do
   defp deps do
     [
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.30", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.30", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false}
+    ]
+  end
+
+  defp dialyzer() do
+    [
+      flags: ["-Wunmatched_returns", :error_handling, :underspecs]
     ]
   end
 
