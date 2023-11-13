@@ -1,7 +1,7 @@
 defmodule Dreamy.MixProject do
   use Mix.Project
 
-  @pkg_version "0.1.2"
+  @pkg_version "0.1.3"
 
   def project do
     [

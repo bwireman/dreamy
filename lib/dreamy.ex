@@ -12,6 +12,7 @@ defmodule Dreamy do
         only: [
           fallthrough: 2,
           otherwise: 3,
+          or_else: 2,
           const: 2,
           through: 2,
           unwrap: 1,
@@ -32,8 +33,10 @@ defmodule Dreamy do
 
     @typedoc "Type union of `t` & `nil`"
     @type nullable(t) :: t | nil
+
     @typedoc "Type for documenting the value within an enumerable"
     @type enumerable(_t) :: Enumerable.t()
+
     @typedoc "Wrapper for :ok, and :error tuple"
     @type result(ok, error) :: {:ok, ok} | {:error, error}
   end
@@ -103,6 +106,42 @@ defmodule Dreamy do
   end
 
   @doc """
+  Macro for adding a default catchall `true` clause to cond statements, that returns the default value
+
+  ## Examples
+  ```
+  iex> use Dreamy
+  ...> x = 5
+  ...> or_else "Less than 10" do
+  ...> x == 10 -> "10"
+  ...> x > 10 -> "Greater than 10"
+  ...> end
+  "Less than 10"
+
+  iex> use Dreamy
+  ...> x = 11
+  ...> or_else "Less than 10" do
+  ...> x == 10 -> "10"
+  ...> x > 10 -> "Greater than 10"
+  ...> end
+  "Greater than 10"
+  ```
+  """
+  defmacro or_else(default, do: code) do
+    code =
+      code ++
+        [
+          {:->, [], [[true], default]}
+        ]
+
+    quote do
+      cond do
+        unquote(code)
+      end
+    end
+  end
+
+  @doc """
   Macro for defining a constant attribute and function
 
   ## Examples
@@ -142,7 +181,7 @@ defmodule Dreamy do
   0
   ```
   """
-  @spec through(any(), (any() -> any())) :: any()
+  @spec through(a, (a -> b)) :: b when a: var, b: var
   def through(v, fun), do: fun.(v)
 
   @doc """

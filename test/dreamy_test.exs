@@ -1,43 +1,84 @@
 defmodule DreamyTest do
+  @moduledoc false
+
   use ExUnit.Case
   use Dreamy
 
   doctest Dreamy
 
-  test "fallthrough" do
-    t =
-      fallthrough 1 do
-        3 -> :error
-        1 -> :ok
-      end
+  describe "fallthrough" do
+    test "hit" do
+      t =
+        fallthrough 1 do
+          3 -> :error
+          1 -> :ok
+        end
 
-    assert t == :ok
+      assert t == :ok
+    end
 
-    t =
-      fallthrough 1 do
-        2 -> :ok
-        3 -> :error
-      end
+    test "miss" do
+      t =
+        fallthrough 1 do
+          2 -> :ok
+          3 -> :error
+        end
 
-    assert t == 1
+      assert t == 1
+    end
   end
 
-  test "otherwise" do
-    t =
-      otherwise 1, nil do
-        3 -> :error
-        1 -> :ok
-      end
+  describe "otherwise" do
+    test "hit" do
+      t =
+        otherwise 1, nil do
+          3 -> :error
+          1 -> :ok
+        end
 
-    assert t == :ok
+      assert t == :ok
+    end
 
-    t =
-      otherwise 1, :error do
-        2 -> :ok
-        3 -> :error
-      end
+    test "miss" do
+      t =
+        otherwise 1, :error do
+          2 -> :ok
+          3 -> :error
+        end
 
-    assert t == :error
+      assert t == :error
+    end
+  end
+
+  describe "or_else" do
+    test "hit" do
+      x = "abc"
+
+      t =
+        or_else :ok do
+          is_nil(x) -> {:error, nil}
+          is_binary(x) -> {:error, :binary}
+          is_number(x) -> {:error, :number}
+          is_list(x) -> {:error, :list}
+          is_map(x) -> {:error, :map}
+        end
+
+      assert t == {:error, :binary}
+    end
+
+    test "miss" do
+      x = "abc"
+
+      t =
+        or_else :ok do
+          is_nil(x) -> {:error, nil}
+          is_number(x) -> {:error, :number}
+          is_list(x) -> {:error, :list}
+          is_map(x) -> {:error, :map}
+        end
+
+      assert t == :ok
+    end
   end
 
   test "const" do
@@ -73,7 +114,7 @@ defmodule DreamyTest do
            |> through(fn x -> x + 1 end) == 3
   end
 
-  def double(x), do: x * 2
+  defp double(x), do: x * 2
 
   test ">>>" do
     plus = fn x -> x + 1 end
