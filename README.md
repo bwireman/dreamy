@@ -15,12 +15,14 @@ Dreamy provides useful macros, functions, types & operators to make elixir even 
 - [>>>](https://hexdocs.pm/dreamy/Dreamy.html#%3E%3E%3E/2)
 - [~>](https://hexdocs.pm/dreamy/Dreamy.html#~%3E/2)
 - [~>>](https://hexdocs.pm/dreamy/Dreamy.html#~%3E%3E/2)
+- [|||](https://hexdocs.pm/dreamy/Dreamy.html#%7C%7C%7C/2)
 
 # Macros
 
 - [fallthrough](https://hexdocs.pm/dreamy/Dreamy.html#fallthrough/2)
 - [otherwise](https://hexdocs.pm/dreamy/Dreamy.html#otherwise/3)
 - [const](https://hexdocs.pm/dreamy/Dreamy.html#const/2)
+- [or_else](https://hexdocs.pm/dreamy/Dreamy.html#or_else/2)
 
 # Functions
 
@@ -33,6 +35,7 @@ Dreamy provides useful macros, functions, types & operators to make elixir even 
 
 - [`nullable(t)`](https://hexdocs.pm/dreamy/Dreamy.Types.html#t:nullable/1)
 - [`result(ok, error)`](https://hexdocs.pm/dreamy/Dreamy.Types.html#t:result/2)
+- [`enumerable(_t)`](https://hexdocs.pm/dreamy/Dreamy.Types.html#t:enumerable/1)
 
 ## Installation
 

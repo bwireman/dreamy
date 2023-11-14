@@ -175,9 +175,9 @@ defmodule Dreamy do
   ## Examples
   ```
   iex> use Dreamy
-  iex> 2 |>
-  iex> through(fn x -> x - 1 end) |>
-  iex> through(fn x -> x - 1 end)
+  iex> 2
+  ...> |> through(fn x -> x - 1 end)
+  ...> |> through(fn x -> x - 1 end)
   0
   ```
   """
@@ -221,67 +221,6 @@ defmodule Dreamy do
   def unwrap_error({:error, v}), do: v
 
   @doc """
-  Function for applying result tuples on success only
-
-  ## Examples
-  ```
-  iex> use Dreamy
-  ...> {:ok, 1} ~>
-  ...> fn x -> {:ok, x + 1} end ~>
-  ...> fn y -> y + 1 end
-  3
-
-  iex> use Dreamy
-  ...> {:error, 1} ~> fn x -> x + 1 end
-  {:error, 1}
-  ```
-  """
-  @spec Types.result(res, err) ~> (res -> x) :: x | {:error, err} when res: var, err: var, x: var
-  def {:ok, l} ~> r when is_function(r), do: r.(l)
-  def {:error, l} ~> r when is_function(r), do: {:error, l}
-
-  @doc """
-  Operator short hand for Enum.map
-
-  ## Examples
-  ```
-  iex> use Dreamy
-  ...> x = fn y -> y + 1 end
-  ...> y = fn z -> z * 2 end
-  ...> [1, 2]
-  ...> >>> x
-  ...> >>> y
-  [4, 6]
-  ```
-  """
-  defmacro enumerable >>> func do
-    quote do
-      Enum.map(unquote(enumerable), unquote(func))
-    end
-  end
-
-  @doc """
-  Function for applying result tuples on success only
-
-  ## Examples
-  ```
-  iex> use Dreamy
-  ...> {:ok, 1} ~>>
-  ...> fn {:ok, x} -> {:ok, x + 1} end ~>>
-  ...> fn {:ok, x} -> {:ok, x + 1} end
-  {:ok, 3}
-
-  iex> use Dreamy
-  ...> {:error, 1} ~>> fn {:ok, x} -> {:ok, x + 1} end
-  {:error, 1}
-  ```
-  """
-  @spec Types.result(res, err) ~>> (Types.result(res, err) -> x) :: x | {:error, err}
-        when res: var, err: var, x: var
-  def ({:ok, _} = l) ~>> r when is_function(r), do: r.(l)
-  def ({:error, _} = l) ~>> r when is_function(r), do: l
-
-  @doc """
   Function for flipping results
 
   ## Examples
@@ -298,6 +237,76 @@ defmodule Dreamy do
   @spec flip(Types.result(res, err)) :: Types.result(err, res) when res: var, err: var
   def flip({:ok, v}), do: {:error, v}
   def flip({:error, v}), do: {:ok, v}
+
+  @doc """
+  Function for applying result tuples on success only
+
+  ## Examples
+  ```
+  iex> use Dreamy
+  ...> {:ok, 1}
+  ...> ~> fn x -> {:ok, x + 1} end
+  ...> ~> fn y -> y + 1 end
+  3
+
+  iex> use Dreamy
+  ...> {:error, 1} ~> fn x -> x + 1 end
+  {:error, 1}
+  ```
+  """
+  @spec Types.result(res, err) ~> (res -> x) :: x | {:error, err} when res: var, err: var, x: var
+  def {:ok, l} ~> r when is_function(r), do: r.(l)
+  def {:error, l} ~> r when is_function(r), do: {:error, l}
+
+  @doc """
+  Operator for Enum.map
+
+  ## Examples
+  ```
+  iex> use Dreamy
+  ...> x = fn y -> y + 1 end
+  ...> y = fn z -> z * 2 end
+  ...> [1, 2]
+  ...> >>> x
+  ...> >>> y
+  [4, 6]
+
+  iex> use Dreamy
+  ...> x = fn y -> y - 1 end
+  ...> [2, 3]
+  ...> >>> x
+  ...> >>> (&IO.inspect/1)
+  ...> >>> x
+  ...> >>> (&IO.inspect/1)
+  [0, 1]
+  ```
+  """
+  defmacro enumerable >>> func do
+    quote do
+      Enum.map(unquote(enumerable), unquote(func))
+    end
+  end
+
+  @doc """
+  Function for applying result tuples on success only
+
+  ## Examples
+  ```
+  iex> use Dreamy
+  ...> {:ok, 1}
+  ...> ~>> fn {:ok, x} -> {:ok, x + 1} end
+  ...> ~>> fn {:ok, x} -> {:ok, x + 1} end
+  {:ok, 3}
+
+  iex> use Dreamy
+  ...> {:error, 1} ~>> fn {:ok, x} -> {:ok, x + 1} end
+  {:error, 1}
+  ```
+  """
+  @spec Types.result(res, err) ~>> (Types.result(res, err) -> x) :: x | {:error, err}
+        when res: var, err: var, x: var
+  def ({:ok, _} = l) ~>> r when is_function(r), do: r.(l)
+  def ({:error, _} = l) ~>> r when is_function(r), do: l
 
   @doc """
   Function getting the first :ok result if one exists
