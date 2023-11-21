@@ -47,16 +47,16 @@ defmodule Dreamy do
   ## Examples
   ```
   iex> use Dreamy
-  ...> fallthrough 1 do
-  ...> 2 -> 2
+  ...> fallthrough {:error, "error"} do
+  ...> {:ok, v} -> v
   ...> end
-  1
+  {:error, "error"}
 
   iex> use Dreamy
-  ...> fallthrough 2 do
-  ...> 2 -> 2
+  ...> fallthrough {:ok, "OK"} do
+  ...> {:ok, "OK"} -> "OK"
   ...> end
-  2
+  "OK"
   ```
   """
   defmacro fallthrough(val, do: code) do
@@ -79,16 +79,16 @@ defmodule Dreamy do
   ## Examples
   ```
   iex> use Dreamy
-  ...> otherwise 1, nil do
-  ...> 2 -> 2
+  ...> otherwise nil, {:error, :not_found} do
+  ...> {:ok, _} -> :ok
   ...> end
-  nil
+  {:error, :not_found}
 
   iex> use Dreamy
-  ...> otherwise 2, nil do
-  ...> 2 -> 2
+  ...> otherwise {:ok, nil}, {:error, :not_found} do
+  ...> {:ok, _} -> :ok
   ...> end
-  2
+  :ok
   ```
   """
   defmacro otherwise(val, default, do: code) do
@@ -273,12 +273,11 @@ defmodule Dreamy do
 
   iex> use Dreamy
   ...> x = fn y -> y - 1 end
-  ...> [2, 3]
+  ...> [5, 7]
   ...> >>> x
-  ...> >>> (&IO.inspect/1)
+  ...> >>> (&div(&1, 2))
   ...> >>> x
-  ...> >>> (&IO.inspect/1)
-  [0, 1]
+  [1, 2]
   ```
   """
   defmacro enumerable >>> func do
@@ -295,8 +294,8 @@ defmodule Dreamy do
   iex> use Dreamy
   ...> {:ok, 1}
   ...> ~>> fn {:ok, x} -> {:ok, x + 1} end
-  ...> ~>> fn {:ok, x} -> {:ok, x + 1} end
-  {:ok, 3}
+  ...> ~>> fn {:ok, x} -> {:ok, x * 2} end
+  {:ok, 4}
 
   iex> use Dreamy
   ...> {:error, 1} ~>> fn {:ok, x} -> {:ok, x + 1} end
