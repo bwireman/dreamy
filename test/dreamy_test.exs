@@ -3,7 +3,6 @@ defmodule DreamyTest do
 
   use ExUnit.Case
   use Dreamy
-
   doctest Dreamy
 
   describe "fallthrough" do
@@ -98,20 +97,13 @@ defmodule DreamyTest do
   end
 
   test "~>>" do
-    assert {:ok, 1} ~>> fn {:ok, x} -> x + 1 end == 2
-    assert {:error, 1} ~>> fn {:ok, x} -> x + 1 end == {:error, 1}
+    assert {:ok, 1} ~>> fn x -> {:ok, x + 1} end == {:ok, 2}
+    assert {:error, 1} ~>> fn x -> {:ok, x + 1} end == {:error, 1}
   end
 
   test "unwrap" do
     assert unwrap({:ok, 1}) == 1
     assert unwrap({:error, 1}) == {:error, 1}
-  end
-
-  test "through" do
-    assert 0
-           |> through(fn x -> x + 1 end)
-           |> through(fn x -> x + 1 end)
-           |> through(fn x -> x + 1 end) == 3
   end
 
   defp double(x), do: x * 2

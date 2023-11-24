@@ -1,12 +1,12 @@
 defmodule Dreamy do
   @moduledoc """
-  Dreamy provides useful macros, functions, types & operators to make elixir even more dreamy 😴
+  Dreamy provides useful macros, functions, types & operators to make elixir even dreamier 😴
   """
 
   defmacro __using__(_) do
     quote do
-      import IO, only: [inspect: 1, inspect: 2, inspect: 3]
-      alias Dreamy.Types
+      alias Dreamy.{Option, Result, Types}
+      import Dreamy.{Monodic, Option, Result}
 
       import Dreamy,
         only: [
@@ -14,14 +14,7 @@ defmodule Dreamy do
           otherwise: 3,
           or_else: 2,
           const: 2,
-          through: 2,
-          unwrap: 1,
-          unwrap_error: 1,
-          flip: 1,
-          ~>: 2,
-          ~>>: 2,
-          >>>: 2,
-          |||: 2
+          >>>: 2
         ]
     end
   end
@@ -37,8 +30,8 @@ defmodule Dreamy do
     @typedoc "Type for documenting the value within an enumerable"
     @type enumerable(_t) :: Enumerable.t()
 
-    @typedoc "Wrapper for :ok, and :error tuple"
-    @type result(ok, error) :: {:ok, ok} | {:error, error}
+    @type option(t) :: Dreamy.Option.t(t)
+    @type result(ok, err) :: Dreamy.Result.t(ok, err)
   end
 
   @doc """
@@ -170,95 +163,6 @@ defmodule Dreamy do
   end
 
   @doc """
-  function for applying anonymous functions
-
-  ## Examples
-  ```
-  iex> use Dreamy
-  iex> 2
-  ...> |> through(fn x -> x - 1 end)
-  ...> |> through(fn x -> x - 1 end)
-  0
-  ```
-  """
-  @spec through(a, (a -> b)) :: b when a: var, b: var
-  def through(v, fun), do: fun.(v)
-
-  @doc """
-  Function for extracting values from :ok records
-
-  ## Examples
-  ```
-  iex> use Dreamy
-  ...> {:ok, "hello"} |> unwrap
-  "hello"
-
-  iex> use Dreamy
-  ...> {:error, "world"} |> unwrap
-  {:error, "world"}
-  ```
-  """
-  @spec unwrap(Types.result(x, y)) :: x | {:error, y} when x: var, y: var
-  def unwrap({:ok, v}), do: v
-  def unwrap({:error, v}), do: {:error, v}
-
-  @doc """
-  Function for extracting values from :error tuples
-
-  ## Examples
-  ```
-  iex> use Dreamy
-  ...> {:ok, "hello"} |> unwrap_error
-  {:ok, "hello"}
-
-  iex> use Dreamy
-  ...> {:error, "world"} |> unwrap_error
-  "world"
-  ```
-  """
-  @spec unwrap_error(Types.result(x, y)) :: {:ok, x} | y when x: var, y: var
-  def unwrap_error({:ok, v}), do: {:ok, v}
-  def unwrap_error({:error, v}), do: v
-
-  @doc """
-  Function for flipping results
-
-  ## Examples
-  ```
-  iex> use Dreamy
-  ...> flip({:ok, 3})
-  {:error, 3}
-
-  iex> use Dreamy
-  ...> flip({:error, 3})
-  {:ok, 3}
-  ```
-  """
-  @spec flip(Types.result(res, err)) :: Types.result(err, res) when res: var, err: var
-  def flip({:ok, v}), do: {:error, v}
-  def flip({:error, v}), do: {:ok, v}
-
-  @doc """
-  Function for applying result tuples on success only
-
-  ## Examples
-  ```
-  iex> use Dreamy
-  ...> {:ok, 1}
-  ...> ~> fn x -> {:ok, x + 1} end
-  ...> ~> fn y -> y + 1 end
-  3
-
-  iex> use Dreamy
-  ...> {:error, 1} ~> fn x -> x + 1 end
-  {:error, 1}
-  ```
-  """
-  @spec Types.result(res, err) ~> (res -> x) :: x | {:error, err} when res: var, err: var, x: var
-  def {:ok, l} ~> r when is_function(r), do: r.(l)
-  def {:error, l} ~> r when is_function(r), do: {:error, l}
-
-  @doc """
   Operator for Enum.map
 
   ## Examples
@@ -285,57 +189,4 @@ defmodule Dreamy do
       Enum.map(unquote(enumerable), unquote(func))
     end
   end
-
-  @doc """
-  Function for applying result tuples on success only
-
-  ## Examples
-  ```
-  iex> use Dreamy
-  ...> {:ok, 1}
-  ...> ~>> fn {:ok, x} -> {:ok, x + 1} end
-  ...> ~>> fn {:ok, x} -> {:ok, x * 2} end
-  {:ok, 4}
-
-  iex> use Dreamy
-  ...> {:error, 1} ~>> fn {:ok, x} -> {:ok, x + 1} end
-  {:error, 1}
-  ```
-  """
-  @spec Types.result(res, err) ~>> (Types.result(res, err) -> x) :: x | {:error, err}
-        when res: var, err: var, x: var
-  def ({:ok, _} = l) ~>> r when is_function(r), do: r.(l)
-  def ({:error, _} = l) ~>> r when is_function(r), do: l
-
-  @doc """
-  Function getting the first :ok result if one exists
-
-  ## Examples
-  ```
-  iex> use Dreamy
-  ...> {:ok, "success"} ||| {:ok, "success 2"}
-  {:ok, "success"}
-
-  iex> use Dreamy
-  ...> {:error, "oops"} ||| {:ok, "success 2"}
-  {:ok, "success 2"}
-
-  iex> use Dreamy
-  ...> {:error, "oops"} ||| {:error, "darn"}
-  {:error, "oops"}
-
-  iex> use Dreamy
-  ...> {:ok, "first try"} ||| {:error, "darn"} ||| {:ok, "finally"}
-  {:ok, "first try"}
-
-  iex> use Dreamy
-  ...> {:error, "oops"} ||| {:error, "darn"} ||| {:ok, "finally"}
-  {:ok, "finally"}
-  ```
-  """
-  @spec Types.result(a, err_a) ||| Types.result(b, any()) :: {:ok, a} | {:ok, b} | {:error, err_a}
-        when a: var, b: var, err_a: var
-  def ({:ok, _} = l) ||| _, do: l
-  def {:error, _} ||| ({:ok, _} = r), do: r
-  def ({:error, _} = l) ||| {:error, _}, do: l
 end
