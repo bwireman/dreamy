@@ -5,8 +5,8 @@ defmodule Dreamy do
 
   defmacro __using__(_) do
     quote do
-      alias Dreamy.{Option, Result, Types}
-      import Dreamy.{Monodic, Option, Result}
+      alias Dreamy.{Defaults, Option, Result, Types}
+      import Dreamy.{Defaults, Monodic, Option, Result}
 
       import Dreamy,
         only: [
@@ -20,9 +20,7 @@ defmodule Dreamy do
   end
 
   defmodule Types do
-    @moduledoc """
-    Useful Type definitions
-    """
+    @moduledoc "Useful Type definitions"
 
     @typedoc "Type union of `t` & `nil`"
     @type nullable(t) :: t | nil
@@ -30,7 +28,10 @@ defmodule Dreamy do
     @typedoc "Type for documenting the value within an enumerable"
     @type enumerable(_t) :: Enumerable.t()
 
+    @typedoc "Monodic type that can hold a value"
     @type option(t) :: Dreamy.Option.t(t)
+
+    @typedoc "Monodic type for :ok, :error tuples"
     @type result(ok, err) :: Dreamy.Result.t(ok, err)
   end
 

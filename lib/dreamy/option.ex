@@ -4,7 +4,6 @@ defmodule Dreamy.Option do
   """
 
   import Dreamy
-  require Dreamy
 
   @type t(t) :: {__MODULE__, t | :empty}
 
@@ -20,7 +19,9 @@ defmodule Dreamy.Option do
   """
   const(:empty, {__MODULE__, :empty})
 
-  defguard is_option(v) when is_tuple(v) and elem(v, 0) == __MODULE__
+  defguard is_option(v) when is_tuple(v) and tuple_size(v) == 2 and elem(v, 0) == __MODULE__
+
+  defguard is_empty(v) when is_option(v) and elem(v, 1) == :empty
 
   @doc """
   builds an Option from a value
@@ -57,7 +58,7 @@ defmodule Dreamy.Option do
   {Dreamy.Option, "OK"}
   ```
   """
-  def from_result({:ok, v}), do: {__MODULE__, v}
+  def from_result({:ok, v}), do: option(v)
   def from_result({:error, _}), do: @empty
 
   @doc """
@@ -78,25 +79,6 @@ defmodule Dreamy.Option do
   """
   def to_result(@empty), do: {:error, nil}
   def to_result({__MODULE__, v}), do: {:ok, v}
-
-  @doc """
-  Returns true if an Option is empty
-
-  ## Examples
-  ```
-  iex> use Dreamy
-  ...> empty()
-  ...> |> is_empty?()
-  true
-
-  iex> use Dreamy
-  ...> option("OK")
-  ...> |> is_empty?()
-  false
-  ```
-  """
-  def is_empty?(@empty), do: true
-  def is_empty?({__MODULE__, _}), do: false
 
   @doc """
   Get the value of an option

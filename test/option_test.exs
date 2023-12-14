@@ -5,24 +5,17 @@ defmodule DreamyOptionTest do
   use Dreamy
   doctest Dreamy.Option
 
-  describe "is_option/1 guard" do
-    test "✅" do
-      assert (case option(123) do
-                v when is_option(v) -> true
-                _ -> false
-              end)
-
-      assert (case empty() do
-                v when is_option(v) -> true
-                _ -> false
-              end)
+  describe "guards" do
+    test "is_option/1" do
+      assert is_option(option(123))
+      assert is_option(empty())
+      assert not is_option(123)
     end
 
-    test "X" do
-      assert not (case 123 do
-                    v when is_option(v) -> true
-                    _ -> false
-                  end)
+    test "is_empty/1" do
+      assert is_empty(empty())
+      assert is_empty(option(nil))
+      assert not is_empty(option(true))
     end
   end
 end

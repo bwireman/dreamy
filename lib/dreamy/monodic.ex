@@ -1,10 +1,10 @@
 defmodule Dreamy.Monodic do
-  @moduledoc """
-  Functions for use with both Result and Option monads
-  """
+  @moduledoc "Functions for use with both Result and Option monads"
 
   alias Dreamy.{Option, Result}
   require Dreamy.{Option, Result}
+
+  defguard is_monodic(v) when Option.is_option(v) or Result.is_result(v)
 
   @doc """
   Function for applying result tuples & options on success only
@@ -18,18 +18,21 @@ defmodule Dreamy.Monodic do
   3
 
   iex> use Dreamy
-  ...> {:error, 1} ~> fn x -> x + 1 end
+  ...> {:error, 1}
+  ...> ~> fn x -> x + 1 end
   {:error, 1}
   ```
 
   ## Option Examples
   ```
   iex> use Dreamy
-  ...> empty() ~> (fn _ -> :ok end)
+  ...> empty()
+  ...> ~> (fn _ -> :ok end)
   {Dreamy.Option, :empty}
 
   iex> use Dreamy
-  ...> option(1) ~> (fn x -> x + 1 end)
+  ...> option(1)
+  ...> ~> (fn x -> x + 1 end)
   {Dreamy.Option, 2}
   ```
   """
@@ -41,7 +44,7 @@ defmodule Dreamy.Monodic do
   def {Dreamy.Option, :empty} ~> r when is_function(r), do: Option.empty()
   def {Dreamy.Option, val} ~> r when is_function(r), do: {Dreamy.Option, r.(val)}
 
-  @doc "Same as ~>"
+  @doc "Alias for ~>"
   def map(v, f), do: v ~> f
 
   @doc """
@@ -56,18 +59,21 @@ defmodule Dreamy.Monodic do
   {:ok, 4}
 
   iex> use Dreamy
-  ...> {:error, 1} ~>> fn {:ok, x} -> {:ok, x + 1} end
+  ...> {:error, 1}
+  ...> ~>> fn {:ok, x} -> {:ok, x + 1} end
   {:error, 1}
   ```
 
   ## Option Examples
   ```
   iex> use Dreamy
-  ...> empty() ~>> (fn x -> option(x + 2) end)
+  ...> empty()
+  ...> ~>> (fn x -> option(x + 2) end)
   {Dreamy.Option, :empty}
 
   iex> use Dreamy
-  ...> option(1) ~>> (fn x -> option(x + 2) end)
+  ...> option(1)
+  ...> ~>> (fn x -> option(x + 2) end)
   {Dreamy.Option, 3}
   ```
   """
@@ -76,17 +82,16 @@ defmodule Dreamy.Monodic do
   @spec Option.t(v) ~> (v -> Option.t(x)) :: Option.t(x) when v: var, x: var
   def {:ok, l} ~>> r when is_function(r), do: r.(l)
   def ({:error, _} = l) ~>> r when is_function(r), do: l
-
   def {Dreamy.Option, :empty} ~>> r when is_function(r), do: Option.empty()
   def {Dreamy.Option, l} ~>> r when is_function(r), do: r.(l)
 
-  @doc "Same as ~>>"
+  @doc "Alias for ~>>"
   def flat_map(v, f), do: v ~>> f
 
   @doc """
   Function that flattens monads containing other monads
 
-  # Example
+  ## Result Examples
   ```
   iex> use Dreamy
   ...> flatten(ok(ok("Hello World")))
@@ -103,7 +108,10 @@ defmodule Dreamy.Monodic do
   iex> use Dreamy
   ...> flatten(error(error("Hello World")))
   {:error, "Hello World"}
+  ```
 
+  ## Option Examples
+  ```
   iex> use Dreamy
   ...> flatten(option(option("Hello World")))
   {Option, "Hello World"}

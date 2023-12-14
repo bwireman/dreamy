@@ -33,7 +33,11 @@ defmodule Dreamy.Result do
   """
   def error(val), do: {:error, val}
 
-  defguard is_result(v) when is_tuple(v) and elem(v, 0) in [:error, :ok]
+  defguard is_ok(v) when is_tuple(v) and tuple_size(v) == 2 and elem(v, 0) == :ok
+
+  defguard is_error(v) when is_tuple(v) and tuple_size(v) == 2 and elem(v, 0) == :error
+
+  defguard is_result(v) when is_ok(v) or is_error(v)
 
   @doc """
   Function getting the first :ok result if one exists
@@ -73,17 +77,19 @@ defmodule Dreamy.Result do
   ## Examples
   ```
   iex> use Dreamy
-  ...> {:ok, "hello"} |> unwrap
+  ...> {:ok, "hello"}
+  ...> |> unwrap
   "hello"
 
   iex> use Dreamy
-  ...> {:error, "world"} |> unwrap
+  ...> {:error, "world"}
+  ...> |> unwrap
   {:error, "world"}
   ```
   """
   @spec unwrap(t(x, y)) :: x | {:error, y} when x: var, y: var
   def unwrap({:ok, v}), do: v
-  def unwrap({:error, v}), do: {:error, v}
+  def unwrap({:error, v}), do: error(v)
 
   @doc """
   Function for extracting values from :error tuples
@@ -91,16 +97,18 @@ defmodule Dreamy.Result do
   ## Examples
   ```
   iex> use Dreamy
-  ...> {:ok, "hello"} |> unwrap_error
+  ...> {:ok, "hello"}
+  ...> |> unwrap_error
   {:ok, "hello"}
 
   iex> use Dreamy
-  ...> {:error, "world"} |> unwrap_error
+  ...> {:error, "world"}
+  ...> |> unwrap_error
   "world"
   ```
   """
   @spec unwrap_error(t(x, y)) :: {:ok, x} | y when x: var, y: var
-  def unwrap_error({:ok, v}), do: {:ok, v}
+  def unwrap_error({:ok, v}), do: ok(v)
   def unwrap_error({:error, v}), do: v
 
   @doc """
@@ -118,8 +126,8 @@ defmodule Dreamy.Result do
   ```
   """
   @spec flip(t(res, err)) :: t(err, res) when res: var, err: var
-  def flip({:ok, v}), do: {:error, v}
-  def flip({:error, v}), do: {:ok, v}
+  def flip({:ok, v}), do: error(v)
+  def flip({:error, v}), do: ok(v)
 
   @doc """
   Function to convert results to options
