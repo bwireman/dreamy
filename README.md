@@ -10,32 +10,8 @@
 
 Dreamy provides useful macros, functions, types & operators to make elixir even dreamier 😴
 
-# Operators
-
-- [>>>](https://hexdocs.pm/dreamy/Dreamy.html#%3E%3E%3E/2)
-- [~>](https://hexdocs.pm/dreamy/Dreamy.Monodic.html#~%3E/2)
-- [~>>](https://hexdocs.pm/dreamy/Dreamy.Monodic.html#~%3E%3E/2)
-- [|||](https://hexdocs.pm/dreamy/Dreamy.Result.html#%7C%7C%7C/2)
-
-# Macros
-
-- [fallthrough](https://hexdocs.pm/dreamy/Dreamy.html#fallthrough/2)
-- [otherwise](https://hexdocs.pm/dreamy/Dreamy.html#otherwise/3)
-- [const](https://hexdocs.pm/dreamy/Dreamy.html#const/2)
-- [or_else](https://hexdocs.pm/dreamy/Dreamy.html#or_else/2)
-
-# Functions
-
-- [unwrap](https://hexdocs.pm/dreamy/Dreamy.Result.html#unwrap/1)
-- [unwrap_error](https://hexdocs.pm/dreamy/Dreamy.Result.html#unwrap_error/1)
-- [flip](https://hexdocs.pm/dreamy/Dreamy.Result.html#flip/1)
-
-# Types
-
-- [`nullable(t)`](https://hexdocs.pm/dreamy/Dreamy.Types.html#t:nullable/1)
-- [`result(ok, error)`](https://hexdocs.pm/dreamy/Dreamy.Types.html#t:result/2)
-- [`option(t)`](https://hexdocs.pm/dreamy/Dreamy.Types.html#t:option/1)
-- [`enumerable(_t)`](https://hexdocs.pm/dreamy/Dreamy.Types.html#t:enumerable/1)
+- 📔 Docs: https://hexdocs.pm/dreamy/readme.html 
+- 💾 download: https://hex.pm/packages/dreamy
 
 ## Installation
 
