@@ -55,11 +55,13 @@ defmodule Dreamy.Defaults do
     otherwise String.downcase(str), default do
       # an empty string should also return the default
       "" -> default
+      # true-s
       "true" -> true
       "t" -> true
       "y" -> true
       "yes" -> true
       "1" -> true
+      # false-s
       "false" -> false
       "f" -> false
       "n" -> false
