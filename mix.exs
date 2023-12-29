@@ -23,44 +23,38 @@ defmodule Dreamy.MixProject do
     ]
   end
 
-  def application do
-    []
-  end
+  def application, do: []
 
-  def aliases do
-    [
+  def aliases,
+    do: [
       quality:
         "do clean, compile --warnings-as-errors, format --check-formatted, dialyzer, credo --strict"
     ]
-  end
 
   # Run "mix help deps" to learn about dependencies.
-  defp deps do
-    [
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+  defp deps,
+    do: [
       {:ex_doc, "~> 0.30", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
-      {:committee, "~> 1.0.0", only: :dev, runtime: false}
+      {:committee, "~> 1.0.0", only: :dev, runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false}
     ]
-  end
 
-  defp dialyzer() do
-    [
+  defp dialyzer,
+    do: [
       flags: ["-Wunmatched_returns", :error_handling, :underspecs]
     ]
-  end
 
-  def description do
-    "Dreamy provides useful macros, functions, types & operators to make elixir even dreamier 😴"
-  end
+  def description,
+    do:
+      "Dreamy provides useful macros, functions, types & operators to make elixir even dreamier 😴"
 
-  defp package() do
-    [
+  defp package,
+    do: [
       name: "dreamy",
       licenses: ["MIT"],
       links: %{
         "Github" => "https://github.com/bwireman/dreamy"
       }
     ]
-  end
 end

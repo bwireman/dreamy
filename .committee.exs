@@ -6,6 +6,7 @@ defmodule Dreamy.Commit do
   def pre_commit do
     results =
       [
+        System.cmd("mix", ["hex.outdated"]),
         System.cmd("mix", ["test"]),
         System.cmd("mix", ["format"] ++ staged_files([".ex", ".exs"])),
         System.cmd("mix", ["quality"]),
