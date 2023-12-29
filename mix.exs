@@ -36,6 +36,8 @@ defmodule Dreamy.MixProject do
     do: [
       {:ex_doc, "~> 0.30", only: :dev, runtime: false},
       {:committee, "~> 1.0.0", only: :dev, runtime: false},
+      {:file_system, "~> 1.0.0", only: [:dev, :test], override: true},
+      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false}
     ]

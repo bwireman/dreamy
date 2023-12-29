@@ -5,8 +5,8 @@ defmodule Dreamy do
 
   defmacro __using__(_) do
     quote do
-      alias Dreamy.{Defaults, Option, Result, Types}
-      import Dreamy.{Defaults, Monodic, Option, Result}
+      alias Dreamy.{Defaults, Either, Option, Result, Types}
+      import Dreamy.{Defaults, Either, Monodic, Option, Result}
 
       import Dreamy,
         only: [
@@ -33,6 +33,9 @@ defmodule Dreamy do
 
     @typedoc "Monodic type for :ok, :error tuples"
     @type result(ok, err) :: Dreamy.Result.t(ok, err)
+
+    @typedoc "Monodic type representing a left or right tuple"
+    @type either(l, r) :: Dreamy.Either.t(l, r)
   end
 
   @doc """

@@ -12,6 +12,9 @@ defmodule DreamyMonodicTest do
       assert is_monodic(error(1))
       assert is_monodic(option(1))
       assert is_monodic(empty())
+      assert is_monodic(either(1, 1))
+      assert is_monodic(left(1))
+      assert is_monodic(right(1))
 
       assert not is_monodic({})
       assert not is_monodic(%{})
