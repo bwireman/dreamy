@@ -17,24 +17,24 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.13.4
-              otp: 25.3
-          - pair:
               elixir: 1.14.3
               otp: 25.3
           - pair:
               elixir: 1.15.5
               otp: 25.3
+          - pair:
+              elixir: 1.16.0
+              otp: 25.3
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: erlef/setup-elixir@v1
+      - uses: actions/checkout@v3
+      - uses: erlef/setup-beam@v1
         name: Set up Elixir
         with:
           otp-version: ${{matrix.pair.otp}}
           elixir-version: ${{matrix.pair.elixir}}
       - name: Retrieve Mix Dependencies Cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         id: mix-cache
         with:
           path: deps
@@ -48,7 +48,7 @@ jobs:
       - name: Run tests
         run: mix test
       - name: Retrieve PLT Cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         id: plt-cache
         with:
           path: priv/plts
