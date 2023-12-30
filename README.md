@@ -30,7 +30,8 @@ defmodule Example.Usage do
   use Dreamy
 
   # read file and split into a map of software => version,
-  @spec versions(String.t()) :: map()
+  # -> %{"elixir" => "x.x.x", "erlang" => "x.x.x"}
+  @spec versions() :: map()
   def versions do
     File.read!(".tool-versions")
     |> String.split("\n", parts: 2)
