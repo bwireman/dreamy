@@ -10,8 +10,37 @@
 
 Dreamy provides useful macros, functions, types & operators to make elixir even dreamier 😴
 
-- 📔 Docs: https://hexdocs.pm/dreamy/readme.html 
+- 📔 Docs: https://hexdocs.pm/dreamy/readme.html
 - 💾 download: https://hex.pm/packages/dreamy
+
+## Modules
+
+- [`Dreamy`](https://hexdocs.pm/dreamy/Dreamy.html): Dreamy provides useful macros, functions, types & operators to make elixir even dreamier 😴
+- [`Dreamy.Defaults`](https://hexdocs.pm/dreamy/Dreamy.Defaults.html): Helpers for dealing with Defaults for functions
+- [`Dreamy.Either`](https://hexdocs.pm/dreamy/Dreamy.Either.html): Datatype for representing Either, Or
+- [`Dreamy.Monodic`](https://hexdocs.pm/dreamy/Dreamy.Monodic.html): Functions for use with both Result and Option monads
+- [`Dreamy.Option`](https://hexdocs.pm/dreamy/Dreamy.Option.html): Functions for use with Options
+- [`Dreamy.Result`](https://hexdocs.pm/dreamy/Dreamy.Result.html): Functions for use with :ok, and :error tuples
+- [`Dreamy.Types`](https://hexdocs.pm/dreamy/Dreamy.Types.html): Useful Type definitions
+
+## Usage
+
+```elixir
+defmodule Example.Usage do
+  use Dreamy
+
+  # read file and split into a map of software => version,
+  @spec versions(String.t()) :: map()
+  def versions do
+    File.read!(".tool-versions")
+    |> String.split("\n", parts: 2)
+    >>> (&String.trim/1)
+    >>> (&String.split/1)
+    >>> (&List.to_tuple/1)
+    |> Enum.into(%{})
+  end
+end
+```
 
 ## Installation
 
