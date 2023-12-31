@@ -1,4 +1,5 @@
 defmodule Dreamy.Either do
+  alias Dreamy.Option
   @moduledoc "Datatype for representing Either, Or"
 
   @typedoc "Monodic type representing a left or right tuple"
@@ -16,8 +17,8 @@ defmodule Dreamy.Either do
 
   ## Examples
   ```
-  use Dreamy
-  iex> either(:l, :r)
+  iex> use Dreamy
+  ...> either(:l, :r)
   {Dreamy.Either, :l, :r}
   ```
   """
@@ -29,8 +30,8 @@ defmodule Dreamy.Either do
 
   ## Examples
   ```
-  use Dreamy
-  iex> left(:l)
+  iex> use Dreamy
+  ...> left(:l)
   {Dreamy.Either, :l, nil}
   ```
   """
@@ -42,8 +43,8 @@ defmodule Dreamy.Either do
 
   ## Examples
   ```
-  use Dreamy
-  iex> right(:r)
+  iex> use Dreamy
+  ...> right(:r)
   {Dreamy.Either, nil, :r}
   ```
   """
@@ -55,8 +56,8 @@ defmodule Dreamy.Either do
 
   ## Examples
   ```
-  use Dreamy
-  iex> either(:l, :r)
+  iex> use Dreamy
+  ...> either(:l, :r)
   ...> |> get_left()
   :l
   ```
@@ -69,8 +70,8 @@ defmodule Dreamy.Either do
 
   ## Examples
   ```
-  use Dreamy
-  iex> either(:l, :r)
+  iex> use Dreamy
+  ...> either(:l, :r)
   ...> |> get_right()
   :r
   ```
@@ -83,8 +84,8 @@ defmodule Dreamy.Either do
 
   ## Examples
   ```
-  use Dreamy
-  iex> either(:l, :r)
+  iex> use Dreamy
+  ...> either(:l, :r)
   ...> |> map_left(&Atom.to_string/1)
   {Dreamy.Either, "l", :r}
   ```
@@ -96,8 +97,8 @@ defmodule Dreamy.Either do
 
   ## Examples
   ```
-  use Dreamy
-  iex> either(:l, :r)
+  iex> use Dreamy
+  ...> either(:l, :r)
   ...> |> map_right(&Atom.to_string/1)
   {Dreamy.Either, :l, "r"}
   ```
@@ -109,8 +110,8 @@ defmodule Dreamy.Either do
 
   ## Examples
   ```
-  use Dreamy
-  iex> either(:l, :r)
+  iex> use Dreamy
+  ...> either(:l, :r)
   ...> |> flat_map_left(fn _ -> left(:new_left) end)
   {Dreamy.Either, :new_left, :r}
   ```
@@ -122,8 +123,8 @@ defmodule Dreamy.Either do
 
   ## Examples
   ```
-  use Dreamy
-  iex> either(:l, :r)
+  iex> use Dreamy
+  ...> either(:l, :r)
   ...> |> flat_map_right(fn _ -> right(:new_right) end)
   {Dreamy.Either, :l, :new_right}
   ```
@@ -133,4 +134,52 @@ defmodule Dreamy.Either do
 
     either(l, res)
   end
+
+  @doc """
+  Wraps the left value in a Dreamy.Option, returns an empty if the value is nil
+
+  ## Examples
+  ```
+  iex> use Dreamy
+  ...> left(:l)
+  ...> |> to_option_left()
+  {Dreamy.Option, :l}
+
+  iex> use Dreamy
+  ...> right(:r)
+  ...> |> to_option_left()
+  {Dreamy.Option, :empty}
+  ```
+  """
+  def to_option_left(v) when is_left(v),
+    do:
+      v
+      |> get_left()
+      |> Option.option()
+
+  def to_option_left(_), do: Option.empty()
+
+  @doc """
+  Wraps the right value in a Dreamy.Option, returns an empty if the value is nil
+
+  ## Examples
+  ```
+  iex> use Dreamy
+  ...> right(:r)
+  ...> |> to_option_right()
+  {Dreamy.Option, :r}
+
+  iex> use Dreamy
+  ...> left(:l)
+  ...> |> to_option_right()
+  {Dreamy.Option, :empty}
+  ```
+  """
+  def to_option_right(v) when is_right(v),
+    do:
+      v
+      |> get_right()
+      |> Option.option()
+
+  def to_option_right(_), do: Option.empty()
 end

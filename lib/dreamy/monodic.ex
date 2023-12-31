@@ -1,5 +1,5 @@
 defmodule Dreamy.Monodic do
-  @moduledoc "Functions for use with both Result and Option monads"
+  @moduledoc "Functions for use with a monads defined by Dreamy, including Result, Either & Option monads"
 
   alias Dreamy.{Either, Option, Result}
   require Dreamy.{Either, Option, Result}
