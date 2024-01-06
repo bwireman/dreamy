@@ -13,6 +13,7 @@ defmodule DreamyEitherTest do
       assert is_either(left(:l))
       assert is_either(right(:r))
       assert is_either({Either, :l, :r})
+      assert is_either(neither())
       assert not is_either(option(:l))
       assert not is_either(empty())
       assert not is_either({:ok, :l})
@@ -30,6 +31,7 @@ defmodule DreamyEitherTest do
       assert not is_left(empty())
       assert not is_left({:ok, :l})
       assert not is_left(nil)
+      assert not is_left(neither())
     end
 
     test "is_right/1" do
@@ -44,6 +46,22 @@ defmodule DreamyEitherTest do
       assert not is_right(empty())
       assert not is_right({:ok, :l})
       assert not is_right(nil)
+      assert not is_right(neither())
+    end
+
+    test "is_neither/1" do
+      assert is_neither(neither())
+      assert is_neither(either(nil, nil))
+      assert not is_neither(right(:r))
+      assert not is_neither({Either, nil, :r})
+      assert not is_neither(left(:l))
+      assert not is_neither({Either, :l, nil})
+      assert not is_neither(either(:l, :r))
+      assert not is_neither({Either, :l, :r})
+      assert not is_neither(option(:l))
+      assert not is_neither(empty())
+      assert not is_neither({:ok, :l})
+      assert not is_neither(nil)
     end
   end
 end

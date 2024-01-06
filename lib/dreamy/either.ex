@@ -6,11 +6,12 @@ defmodule Dreamy.Either do
   @type t(l, r) :: {__MODULE__, l, r}
   @type left(l, _r) :: t(l, nil)
   @type right(_l, r) :: t(nil, r)
+  @type neither() :: t(nil, nil)
 
   defguard is_either(v) when is_tuple(v) and tuple_size(v) == 3 and elem(v, 0) == __MODULE__
-
   defguard is_left(v) when is_either(v) and not is_nil(elem(v, 1)) and is_nil(elem(v, 2))
   defguard is_right(v) when is_either(v) and is_nil(elem(v, 1)) and not is_nil(elem(v, 2))
+  defguard is_neither(v) when is_either(v) and is_nil(elem(v, 1)) and is_nil(elem(v, 2))
 
   @doc """
   Returns an Either tuple
@@ -24,6 +25,19 @@ defmodule Dreamy.Either do
   """
   @spec either(l, r) :: t(l, r) when l: var, r: var
   def either(l, r), do: {__MODULE__, l, r}
+
+  @doc """
+  Returns an empty Either tuple, aka a Neither
+
+  ## Examples
+  ```
+  iex> use Dreamy
+  ...> neither()
+  {Dreamy.Either, nil, nil}
+  ```
+  """
+  @spec neither() :: neither()
+  def neither, do: {__MODULE__, nil, nil}
 
   @doc """
   Returns an Either tuple with left value populated, and the right nil
