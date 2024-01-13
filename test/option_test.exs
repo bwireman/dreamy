@@ -17,5 +17,11 @@ defmodule DreamyOptionTest do
       assert is_empty(option(nil))
       assert not is_empty(option(true))
     end
+
+    test "is_some/1" do
+      assert is_some(option(true))
+      assert not is_some(empty())
+      assert not is_some(option(nil))
+    end
   end
 end

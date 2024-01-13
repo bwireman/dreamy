@@ -23,6 +23,8 @@ defmodule Dreamy.Option do
 
   defguard is_empty(v) when is_option(v) and elem(v, 1) == :empty
 
+  defguard is_some(v) when is_option(v) and not is_empty(v)
+
   @doc """
   builds an Option from a value
 
