@@ -40,6 +40,26 @@ defmodule Example.Usage do
     >>> (&List.to_tuple/1)
     |> Enum.into(%{})
   end
+
+  defp foo(x), do: {:ok, x + 1}
+
+  defp bar(x), do: {:ok, x * 2}
+
+  # managing results without Dreamy
+  def without_dreamy(x) do
+    with {:ok, y} <- foo(x),
+         {:ok, y} <- foo(y),
+         {:ok, y} <- bar(y) do
+      y
+    end
+  end
+
+  # VS. with Dreamy
+  def with_dreamy(x), do:
+    foo(x)
+    ~> (&foo/1)
+    ~> (&bar/1)
+    |> unwrap()
 end
 ```
 
