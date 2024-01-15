@@ -23,7 +23,7 @@ fi
 
 function publish {
     MIX_ENV=dev mix quality
-    MIX_ENV=test mix test
+    MIX_ENV=test mix test --cover
     echo "Tagging" "$VER"
     git tag "$VER"
     git push origin "$VER"

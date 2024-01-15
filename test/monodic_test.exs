@@ -22,4 +22,31 @@ defmodule DreamyMonodicTest do
       assert not is_monodic("")
     end
   end
+
+  describe "operations" do
+    test "map" do
+      res =
+        {:ok, 1}
+        |> map(fn x -> {:ok, x + 1} end)
+        |> map(fn y -> y + 1 end)
+
+      assert res == 3
+    end
+
+    test "~>>" do
+      res =
+        either(:l, :r)
+        ~>> fn _ -> left(:new_left) end
+
+      assert {Dreamy.Either, :new_left, :r} = res
+    end
+
+    test "flat_map" do
+      res =
+        either(:l, :r)
+        |> flat_map(fn _ -> left(:new_left) end)
+
+      assert {Dreamy.Either, :new_left, :r} = res
+    end
+  end
 end

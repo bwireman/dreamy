@@ -6,16 +6,9 @@ defmodule Dreamy do
   defmacro __using__(_) do
     quote do
       alias Dreamy.{Defaults, Either, Option, Result, Types}
-      import Dreamy.{Defaults, Either, Monodic, Option, Result}
 
-      import Dreamy,
-        only: [
-          fallthrough: 2,
-          otherwise: 3,
-          or_else: 2,
-          const: 2,
-          >>>: 2
-        ]
+      import Dreamy
+      import Dreamy.{Defaults, Either, Monodic, Option, Result}
     end
   end
 

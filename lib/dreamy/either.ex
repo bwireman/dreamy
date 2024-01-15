@@ -37,7 +37,7 @@ defmodule Dreamy.Either do
   ```
   """
   @spec neither() :: neither()
-  def neither, do: {__MODULE__, nil, nil}
+  def neither, do: either(nil, nil)
 
   @doc """
   Returns an Either tuple with left value populated, and the right nil

@@ -8,7 +8,7 @@ defmodule Dreamy.Commit do
       [
         System.cmd("mix", ["hex.audit"]),
         System.cmd("mix", ["hex.outdated"]),
-        System.cmd("mix", ["test"]),
+        System.cmd("mix", ["test", "--cover"]),
         System.cmd("mix", ["format"] ++ staged_files([".ex", ".exs"])),
         System.cmd("mix", ["quality"]),
         System.cmd("git", ["add"] ++ staged_files())

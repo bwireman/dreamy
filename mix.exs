@@ -19,7 +19,8 @@ defmodule Dreamy.MixProject do
       source_url: "https://github.com/bwireman/dreamy",
       homepage_url: "https://hexdocs.pm/dreamy/readme.html",
       package: package(),
-      dialyzer: dialyzer()
+      dialyzer: dialyzer(),
+      test_coverage: coverage()
     ]
   end
 
@@ -46,6 +47,8 @@ defmodule Dreamy.MixProject do
     do: [
       flags: ["-Wunmatched_returns", :error_handling, :underspecs]
     ]
+
+  def coverage, do: [summary: [threshold: 99]]
 
   def description,
     do:

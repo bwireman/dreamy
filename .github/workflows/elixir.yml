@@ -46,7 +46,7 @@ jobs:
           mix local.hex --force
           mix deps.get
       - name: Run tests
-        run: mix test
+        run: mix test --cover
       - name: Retrieve PLT Cache
         uses: actions/cache@v3
         id: plt-cache
