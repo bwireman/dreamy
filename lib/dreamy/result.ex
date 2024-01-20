@@ -41,12 +41,21 @@ defmodule Dreamy.Result do
 
   @doc """
   Function getting the first :ok result if one exists
+  If the right side is a function, only calling that function when the left is an error
 
   ## Examples
   ```
   iex> use Dreamy
   ...> {:ok, "success"} ||| {:ok, "success 2"}
   {:ok, "success"}
+
+  iex> use Dreamy
+  ...> {:ok, "success"} ||| fn -> {:ok, "done"} end
+  {:ok, "success"}
+
+  iex> use Dreamy
+  ...> {:error, "some error"} ||| fn -> {:ok, "done"} end
+  {:ok, "done"}
 
   iex> use Dreamy
   ...> {:error, "oops"} ||| {:ok, "success 2"}
@@ -63,10 +72,16 @@ defmodule Dreamy.Result do
   iex> use Dreamy
   ...> {:error, "oops"} ||| {:error, "darn"} ||| {:ok, "finally"}
   {:ok, "finally"}
+
+  iex> use Dreamy
+  ...> {:error, "oops"} ||| {:error, "darn"} |||  fn -> {:ok, "finally"} end
+  {:ok, "finally"}
   ```
   """
   @spec t(a, err_a) ||| t(b, any()) :: {:ok, a} | {:ok, b} | {:error, err_a}
         when a: var, b: var, err_a: var
+  def ({:ok, _} = l) ||| fun when is_function(fun), do: l
+  def {:error, _} ||| fun when is_function(fun), do: fun.()
   def ({:ok, _} = l) ||| _, do: l
   def {:error, _} ||| ({:ok, _} = r), do: r
   def ({:error, _} = l) ||| {:error, _}, do: l
@@ -85,11 +100,23 @@ defmodule Dreamy.Result do
   ...> {:error, "world"}
   ...> |> unwrap
   {:error, "world"}
+
+  iex> use Dreamy
+  ...> {:ok, "hello"}
+  ...> |> unwrap("backup")
+  "hello"
+
+  iex> use Dreamy
+  ...> {:error, "world"}
+  ...> |> unwrap("backup")
+  "backup"
   ```
   """
   @spec unwrap(t(x, y)) :: x | {:error, y} when x: var, y: var
   def unwrap({:ok, v}), do: v
   def unwrap({:error, v}), do: error(v)
+  def unwrap({:ok, v}, _), do: v
+  def unwrap({:error, _}, fallback), do: fallback
 
   @doc """
   Function for extracting values from :error tuples

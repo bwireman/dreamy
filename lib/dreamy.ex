@@ -186,4 +186,31 @@ defmodule Dreamy do
       Enum.map(unquote(enumerable), unquote(func))
     end
   end
+
+  @doc """
+  conditionally apply a function to the input value,
+  otherwise letting it pass through unchanged
+
+  ## Examples
+  ```
+  iex> use Dreamy
+  ...> x = fn y -> y - 1 end
+  ...> 2
+  ...> |> conditional_apply(true, x)
+  ...> |> conditional_apply(false, x)
+  ...> |> conditional_apply(true, x)
+  0
+
+  iex> use Dreamy
+  ...> x = fn y -> y <> "!" end
+  ...> "Hello"
+  ...> |> conditional_apply(false, x)
+  ...> |> conditional_apply(false, x)
+  ...> |> conditional_apply(true, x)
+  ...> |> conditional_apply(false, x)
+  "Hello!"
+  ```
+  """
+  def conditional_apply(val, false, _), do: val
+  def conditional_apply(val, true, fun), do: fun.(val)
 end
