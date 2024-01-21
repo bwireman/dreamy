@@ -1,7 +1,7 @@
 defmodule Dreamy.MixProject do
   use Mix.Project
 
-  @pkg_version "0.2.4"
+  @pkg_version "0.3.0"
 
   def project do
     [
@@ -58,9 +58,7 @@ defmodule Dreamy.MixProject do
     do: [
       name: "dreamy",
       licenses: ["MIT"],
-      files:
-        ~w(lib/dreamy/dreamy.ex lib/dreamy/ priv .formatter.exs mix.exs README* readme* LICENSE*
-      license* CHANGELOG* changelog* src),
+      files: ~w(lib/dreamy.ex lib/dreamy/ .formatter.exs mix.exs README* LICENSE*),
       links: %{
         "Github" => "https://github.com/bwireman/dreamy"
       }
