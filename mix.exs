@@ -48,7 +48,7 @@ defmodule Dreamy.MixProject do
       flags: ["-Wunmatched_returns", :error_handling, :underspecs]
     ]
 
-  def coverage, do: [summary: [threshold: 99]]
+  def coverage, do: [ignore_modules: [Checks.RejectAny], summary: [threshold: 99]]
 
   def description,
     do:
@@ -58,6 +58,9 @@ defmodule Dreamy.MixProject do
     do: [
       name: "dreamy",
       licenses: ["MIT"],
+      files:
+        ~w(lib/dreamy/dreamy.ex lib/dreamy/ priv .formatter.exs mix.exs README* readme* LICENSE*
+      license* CHANGELOG* changelog* src),
       links: %{
         "Github" => "https://github.com/bwireman/dreamy"
       }
