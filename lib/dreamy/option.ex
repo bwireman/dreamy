@@ -5,7 +5,8 @@ defmodule Dreamy.Option do
 
   import Dreamy
 
-  @type t(t) :: {__MODULE__, t | :empty}
+  @type t(t) :: {__MODULE__, t} | empty()
+  @type empty() :: {__MODULE__, :empty}
 
   @doc """
   Returns an empty Option
@@ -43,6 +44,7 @@ defmodule Dreamy.Option do
   {Dreamy.Option, "Hello World"}
   ```
   """
+  @spec option(Dreamy.Types.nullable(t)) :: t(t) when t: var
   def option(nil), do: @empty
   def option(val), do: {__MODULE__, val}
 
@@ -60,6 +62,7 @@ defmodule Dreamy.Option do
   {Dreamy.Option, "OK"}
   ```
   """
+  @spec from_result(Dreamy.Result.t(ok, term())) :: t(ok) when ok: var
   def from_result({:ok, v}), do: option(v)
   def from_result({:error, _}), do: @empty
 
@@ -79,6 +82,7 @@ defmodule Dreamy.Option do
   {:ok, "OK"}
   ```
   """
+  @spec to_result(t(v)) :: {:ok, v} | {:error, nil} when v: var
   def to_result(@empty), do: {:error, nil}
   def to_result({__MODULE__, v}), do: {:ok, v}
 
@@ -98,6 +102,7 @@ defmodule Dreamy.Option do
   {:ok, "Hello World"}
   ```
   """
+  @spec get(t(v)) :: {:ok, v} | :error when v: var
   def get(@empty), do: :error
   def get({__MODULE__, val}), do: {:ok, val}
 
@@ -117,6 +122,7 @@ defmodule Dreamy.Option do
   "Hello World"
   ```
   """
+  @spec get!(t(v)) :: v when v: var
   def get!(@empty), do: raise("Empty Option")
   def get!({__MODULE__, val}), do: val
 end

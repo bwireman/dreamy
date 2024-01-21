@@ -4,6 +4,8 @@ defmodule Dreamy.Monodic do
   alias Dreamy.{Either, Option, Result}
   require Dreamy.{Either, Option, Result}
 
+  @type t(l, r) :: Option.t(l) | Either.t(l, r) | Result.t(l, r)
+
   defguard is_monodic(v) when Option.is_option(v) or Result.is_result(v) or Either.is_either(v)
 
   @doc """
@@ -60,6 +62,11 @@ defmodule Dreamy.Monodic do
   def v ~> r when is_function(r, 1) and Either.is_either(v), do: Either.map_left(v, r)
 
   @doc "Alias for ~>/2"
+  @spec map(Result.t(res, err), (res -> x)) :: Result.t(x, err)
+        when res: var, err: var, x: var
+  @spec map(Option.t(v), (v -> x)) :: Option.t(x) when v: var, x: var
+  @spec map(Either.t(l, r), (l -> x)) :: Either.t(x, r)
+        when l: var, r: var, x: var
   def map(v, f), do: v ~> f
 
   @doc """
@@ -92,10 +99,10 @@ defmodule Dreamy.Monodic do
   {Dreamy.Option, 3}
   ```
   """
-  @spec Result.t(res, err) ~> (res -> Result.t(x, err)) :: Result.t(x, err)
+  @spec Result.t(res, err) ~>> (res -> Result.t(x, err)) :: Result.t(x, err)
         when res: var, err: var, x: var
-  @spec Option.t(v) ~> (v -> Option.t(x)) :: Option.t(x) when v: var, x: var
-  @spec Either.t(l, r) ~> (l -> Result.t(x, r)) :: Either.t(x, r)
+  @spec Option.t(v) ~>> (v -> Option.t(x)) :: Option.t(x) when v: var, x: var
+  @spec Either.t(l, r) ~>> (l -> Result.t(x, r)) :: Either.t(x, r)
         when l: var, r: var, x: var
   def {:ok, l} ~>> r when is_function(r, 1), do: r.(l)
   def ({:error, _} = l) ~>> r when is_function(r, 1), do: l
@@ -104,6 +111,11 @@ defmodule Dreamy.Monodic do
   def v ~>> r when is_function(r, 1) and Either.is_either(v), do: Either.flat_map_left(v, r)
 
   @doc "Alias for ~>>"
+  @spec flat_map(Result.t(res, err), (res -> Result.t(x, err))) :: Result.t(x, err)
+        when res: var, err: var, x: var
+  @spec flat_map(Option.t(v), (v -> Option.t(x))) :: Option.t(x) when v: var, x: var
+  @spec flat_map(Either.t(l, r), (l -> Result.t(x, r))) :: Either.t(x, r)
+        when l: var, r: var, x: var
   def flat_map(v, f), do: v ~>> f
 
   @doc """
@@ -150,11 +162,17 @@ defmodule Dreamy.Monodic do
   {Either, "Hello World", nil}
   ```
   """
+  @spec flatten(Result.t(Result.t(ok, err), term())) :: Result.t(ok, err) when ok: var, err: var
+  @spec flatten(Result.t(term(), Result.t(ok, err))) :: Result.t(ok, err) when ok: var, err: var
+  @spec flatten(Option.t(Option.t(v))) :: Option.t(v) when v: var
+  @spec flatten(Either.t(Either.t(l, r), term())) :: Either.t(l, r) when l: var, r: var
+  @spec flatten(Either.t(term(), Either.t(l, r))) :: Either.t(l, r) when l: var, r: var
   def flatten(val) do
     case val do
       {:ok, inner} when Result.is_result(inner) -> inner
       {:error, inner} when Result.is_result(inner) -> inner
       {Option, inner} when Option.is_option(inner) -> inner
+      _ when Option.is_empty(val) -> val
       {Either, inner, _} when Either.is_either(inner) -> inner
       {Either, _, inner} when Either.is_either(inner) -> inner
     end

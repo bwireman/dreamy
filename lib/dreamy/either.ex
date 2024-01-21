@@ -104,6 +104,7 @@ defmodule Dreamy.Either do
   {Dreamy.Either, "l", :r}
   ```
   """
+  @spec map_left(t(l, r), (l -> res)) :: t(res, r) when l: var, r: var, res: var
   def map_left({__MODULE__, l, r}, fun), do: either(fun.(l), r)
 
   @doc """
@@ -117,6 +118,7 @@ defmodule Dreamy.Either do
   {Dreamy.Either, :l, "r"}
   ```
   """
+  @spec map_right(t(l, r), (r -> res)) :: t(l, res) when l: var, r: var, res: var
   def map_right({__MODULE__, l, r}, fun), do: either(l, fun.(r))
 
   @doc """
@@ -130,6 +132,7 @@ defmodule Dreamy.Either do
   {Dreamy.Either, :new_left, :r}
   ```
   """
+  @spec flat_map_left(t(l, r), (l -> t(res, term()))) :: t(res, r) when l: var, r: var, res: var
   def flat_map_left({__MODULE__, l, r}, fun), do: l |> fun.() |> get_left() |> either(r)
 
   @doc """
@@ -143,6 +146,7 @@ defmodule Dreamy.Either do
   {Dreamy.Either, :l, :new_right}
   ```
   """
+  @spec flat_map_right(t(l, r), (r -> t(term(), res))) :: t(l, res) when l: var, r: var, res: var
   def flat_map_right({__MODULE__, l, r}, fun) do
     res = r |> fun.() |> get_right()
 
@@ -165,6 +169,7 @@ defmodule Dreamy.Either do
   {Dreamy.Option, :empty}
   ```
   """
+  @spec to_option_left(t(l, term())) :: Dreamy.Types.option(l) | Dreamy.Option.empty() when l: var
   def to_option_left(v) when is_left(v),
     do:
       v
@@ -189,6 +194,8 @@ defmodule Dreamy.Either do
   {Dreamy.Option, :empty}
   ```
   """
+  @spec to_option_right(t(term(), r)) :: Dreamy.Types.option(r) | Dreamy.Option.empty()
+        when r: var
   def to_option_right(v) when is_right(v),
     do:
       v

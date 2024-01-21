@@ -154,6 +154,7 @@ defmodule Dreamy do
       caller,
       quote do
         Module.put_attribute(__MODULE__, unquote(name), unquote(code))
+        # credo:disable-for-next-line
         def unquote(name)(), do: unquote(code)
       end
     )
@@ -211,6 +212,7 @@ defmodule Dreamy do
   "Hello!"
   ```
   """
+  @spec conditional_apply(term(), boolean(), function()) :: term()
   def conditional_apply(val, false, _), do: val
   def conditional_apply(val, true, fun), do: fun.(val)
 end

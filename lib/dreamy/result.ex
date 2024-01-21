@@ -7,7 +7,9 @@ defmodule Dreamy.Result do
   require Dreamy.Option
 
   @typedoc "Wrapper for :ok, and :error tuple"
-  @type t(ok, error) :: {:ok, ok} | {:error, error}
+  @type t(ok, err) :: ok(ok) | error(err)
+  @type ok(ok) :: {:ok, ok}
+  @type error(err) :: {:error, err}
 
   @doc """
   Returns an empty Option
@@ -19,6 +21,7 @@ defmodule Dreamy.Result do
   {:ok, "Hello World"}
   ```
   """
+  @spec ok(v) :: ok(v) when v: var
   def ok(val), do: {:ok, val}
 
   @doc """
@@ -31,6 +34,7 @@ defmodule Dreamy.Result do
   {:error, "err"}
   ```
   """
+  @spec error(v) :: error(v) when v: var
   def error(val), do: {:error, val}
 
   defguard is_ok(v) when is_tuple(v) and tuple_size(v) == 2 and elem(v, 0) == :ok
@@ -113,6 +117,7 @@ defmodule Dreamy.Result do
   ```
   """
   @spec unwrap(t(x, y)) :: x | {:error, y} when x: var, y: var
+  @spec unwrap(t(x, term()), fallback) :: x | fallback when x: var, fallback: var
   def unwrap({:ok, v}), do: v
   def unwrap({:error, v}), do: error(v)
   def unwrap({:ok, v}, _), do: v
@@ -170,6 +175,7 @@ defmodule Dreamy.Result do
   {Dreamy.Option, :empty}
   ```
   """
+  @spec to_option(t(v, term())) :: Option.t(v) when v: var
   def to_option({:ok, v}), do: Option.option(v)
   def to_option({:error, _}), do: Option.empty()
 
@@ -189,5 +195,6 @@ defmodule Dreamy.Result do
   {:ok, "OK"}
   ```
   """
+  @spec from_option(Option.t(v)) :: t(v, nil) when v: var
   def from_option(v) when Option.is_option(v), do: Option.to_result(v)
 end
