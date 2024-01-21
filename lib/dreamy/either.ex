@@ -76,7 +76,7 @@ defmodule Dreamy.Either do
   :l
   ```
   """
-  @spec get_left(t(l, any())) :: l when l: var
+  @spec get_left(t(l, term())) :: l when l: var
   def get_left({__MODULE__, l, _}), do: l
 
   @doc """
@@ -90,7 +90,7 @@ defmodule Dreamy.Either do
   :r
   ```
   """
-  @spec get_right(t(any(), r)) :: r when r: var
+  @spec get_right(t(term(), r)) :: r when r: var
   def get_right({__MODULE__, _, r}), do: r
 
   @doc """
@@ -116,6 +116,7 @@ defmodule Dreamy.Either do
   """
   @spec map_left(left(l), (l -> res)) :: left(res) when l: var, res: var
   @spec map_left(right(r), (nil -> term())) :: right(r) when l: var, r: var
+  @spec map_left(neither(), (nil -> term())) :: neither()
   def map_left(v, _) when is_neither(v), do: neither()
   def map_left({__MODULE__, nil, r}, _), do: right(r)
   def map_left({__MODULE__, l, nil}, fun), do: left(fun.(l))
@@ -143,6 +144,7 @@ defmodule Dreamy.Either do
   """
   @spec map_right(right(r), (r -> res)) :: right(res) when r: var, res: var
   @spec map_right(left(l), (nil -> term())) :: left(l) when l: var, r: var
+  @spec map_right(neither(), (nil -> term())) :: neither()
   def map_right(v, _) when is_neither(v), do: neither()
   def map_right({__MODULE__, l, nil}, _), do: left(l)
   def map_right({__MODULE__, nil, r}, fun), do: right(fun.(r))
@@ -170,6 +172,7 @@ defmodule Dreamy.Either do
   """
   @spec flat_map_left(left(l), (l -> left(res))) :: left(res) when l: var, res: var
   @spec flat_map_left(right(r), (nil -> left(term()))) :: right(r) when r: var
+  @spec flat_map_left(neither(), (nil -> left(term()))) :: neither()
   def flat_map_left(v, _) when is_neither(v), do: neither()
   def flat_map_left({__MODULE__, nil, r}, _), do: right(r)
   def flat_map_left({__MODULE__, l, nil}, fun), do: l |> fun.() |> get_left() |> left()
@@ -197,6 +200,7 @@ defmodule Dreamy.Either do
   """
   @spec flat_map_right(right(r), (r -> right(res))) :: right(res) when r: var, res: var
   @spec flat_map_right(left(l), (nil -> right(term()))) :: left(l) when l: var
+  @spec flat_map_right(neither(), (nil -> right(term()))) :: neither()
   def flat_map_right(v, _) when is_neither(v), do: neither()
   def flat_map_right({__MODULE__, l, nil}, _), do: left(l)
 

@@ -149,6 +149,10 @@ defmodule Dreamy.Monodic do
   iex> use Dreamy
   ...> flatten(option(empty()))
   {Option, :empty}
+
+  iex> use Dreamy
+  ...> flatten(empty())
+  {Option, :empty}
   ```
 
   ## Either Examples

@@ -82,7 +82,7 @@ defmodule Dreamy.Result do
   {:ok, "finally"}
   ```
   """
-  @spec t(a, err_a) ||| t(b, any()) :: {:ok, a} | {:ok, b} | {:error, err_a}
+  @spec t(a, err_a) ||| t(b, term()) :: {:ok, a} | {:ok, b} | {:error, err_a}
         when a: var, b: var, err_a: var
   def ({:ok, _} = l) ||| fun when is_function(fun), do: l
   def {:error, _} ||| fun when is_function(fun), do: fun.()
