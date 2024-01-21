@@ -153,18 +153,18 @@ defmodule Dreamy.Either do
   ## Examples
   ```
   iex> use Dreamy
-  ...> left(:l)
-  ...> |> flat_map_left(fn _ -> left(:new_left) end)
-  {Dreamy.Either, :new_left, nil}
+  ...> left("left")
+  ...> |> flat_map_left(fn l -> left(l <> "!") end)
+  {Dreamy.Either, "left!", nil}
 
   iex> use Dreamy
   ...> right(:r)
-  ...> |> flat_map_left(fn _ -> left(:new_left) end)
+  ...> |> flat_map_left(fn l -> left(l <> "!") end)
   {Dreamy.Either, nil, :r}
 
   iex> use Dreamy
   ...> neither()
-  ...> |> flat_map_left(&Atom.to_string/1)
+  ...> |> flat_map_left(fn l -> left(l <> "!") end)
   {Dreamy.Either, nil, nil}
   ```
   """
@@ -180,18 +180,18 @@ defmodule Dreamy.Either do
   ## Examples
   ```
   iex> use Dreamy
-  ...> right(:r)
-  ...> |> flat_map_right(fn _ -> right(:new_right) end)
-  {Dreamy.Either, nil, :new_right}
+  ...> right("right")
+  ...> |> flat_map_right(fn r -> right(r <> "!") end)
+  {Dreamy.Either, nil, "right!"}
 
   iex> use Dreamy
   ...> left(:l)
-  ...> |> flat_map_right(fn _ -> right(:new_right) end)
+  ...> |> flat_map_right(fn r -> right(r <> "!") end)
   {Dreamy.Either, :l, nil}
 
   iex> use Dreamy
   ...> neither()
-  ...> |> flat_map_right(&Atom.to_string/1)
+  ...> |> flat_map_right(fn r -> right(r <> "!") end)
   {Dreamy.Either, nil, nil}
   ```
   """

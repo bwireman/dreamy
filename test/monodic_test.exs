@@ -35,18 +35,18 @@ defmodule DreamyMonodicTest do
 
     test "~>>" do
       res =
-        left(:l)
-        ~>> fn _ -> left(:new_left) end
+        left("left")
+        ~>> fn l -> left(String.upcase(l)) end
 
-      assert {Dreamy.Either, :new_left, nil} = res
+      assert {Dreamy.Either, "LEFT", nil} = res
     end
 
     test "flat_map" do
       res =
-        left(:l)
-        |> flat_map(fn _ -> left(:new_left) end)
+        left("left")
+        |> flat_map(fn l -> left(String.upcase(l)) end)
 
-      assert {Dreamy.Either, :new_left, nil} = res
+      assert {Dreamy.Either, "LEFT", nil} = res
     end
   end
 end
