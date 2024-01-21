@@ -10,8 +10,9 @@
 
 Dreamy provides useful macros, functions, types & operators to make elixir even dreamier 😴
 
-- 📔 Docs: https://hexdocs.pm/dreamy/readme.html
-- 💾 download: https://hex.pm/packages/dreamy
+- 📔 [Docs](https://hexdocs.pm/dreamy/readme.html)
+- 💾 [Download](https://hex.pm/packages/dreamy)
+- 👾 [Discord Post](https://discord.com/channels/269508806759809042/1198686632988127344/1198686632988127344)
 
 ## Modules
 
