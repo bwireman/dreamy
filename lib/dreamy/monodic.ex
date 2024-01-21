@@ -40,14 +40,14 @@ defmodule Dreamy.Monodic do
   ## Either Examples
   ```
   iex> use Dreamy
-  ...> either(:l, :r)
+  ...> left(:l)
   ...> ~> &Atom.to_string/1
-  {Dreamy.Either, "l", :r}
+  {Dreamy.Either, "l", nil}
 
   iex> use Dreamy
-  ...> either(100, -1)
+  ...> left(100)
   ...> ~> (fn l -> l + 1 end)
-  {Dreamy.Either, 101, -1}
+  {Dreamy.Either, 101, nil}
   ```
   """
   @spec Result.t(res, err) ~> (res -> x) :: Result.t(x, err)
@@ -61,7 +61,7 @@ defmodule Dreamy.Monodic do
   def {Dreamy.Option, val} ~> r when is_function(r, 1), do: {Dreamy.Option, r.(val)}
   def v ~> r when is_function(r, 1) and Either.is_either(v), do: Either.map_left(v, r)
 
-  @doc "Alias for ~>/2"
+  @doc "Alias for Dreamy.Monodic.~>/2"
   @spec map(Result.t(res, err), (res -> x)) :: Result.t(x, err)
         when res: var, err: var, x: var
   @spec map(Option.t(v), (v -> x)) :: Option.t(x) when v: var, x: var
@@ -110,7 +110,7 @@ defmodule Dreamy.Monodic do
   def {Dreamy.Option, l} ~>> r when is_function(r, 1), do: r.(l)
   def v ~>> r when is_function(r, 1) and Either.is_either(v), do: Either.flat_map_left(v, r)
 
-  @doc "Alias for ~>>"
+  @doc "Alias for Dreamy.Monodic.~>>/2"
   @spec flat_map(Result.t(res, err), (res -> Result.t(x, err))) :: Result.t(x, err)
         when res: var, err: var, x: var
   @spec flat_map(Option.t(v), (v -> Option.t(x))) :: Option.t(x) when v: var, x: var

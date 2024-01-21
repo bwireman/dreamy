@@ -4,8 +4,8 @@ defmodule Dreamy.Either do
 
   @typedoc "Monodic type representing a left or right tuple"
   @type t(l, r) :: {__MODULE__, l, r}
-  @type left(l, _r) :: t(l, nil)
-  @type right(_l, r) :: t(nil, r)
+  @type left(l) :: t(l, nil)
+  @type right(r) :: t(nil, r)
   @type neither() :: t(nil, nil)
 
   defguard is_either(v) when is_tuple(v) and tuple_size(v) == 3 and elem(v, 0) == __MODULE__
@@ -49,7 +49,7 @@ defmodule Dreamy.Either do
   {Dreamy.Either, :l, nil}
   ```
   """
-  @spec left(l) :: left(l, nil) when l: var
+  @spec left(l) :: left(l) when l: var
   def left(v), do: either(v, nil)
 
   @doc """
@@ -62,7 +62,7 @@ defmodule Dreamy.Either do
   {Dreamy.Either, nil, :r}
   ```
   """
-  @spec right(r) :: right(nil, r) when r: var
+  @spec right(r) :: right(r) when r: var
   def right(v), do: either(nil, v)
 
   @doc """
@@ -99,13 +99,26 @@ defmodule Dreamy.Either do
   ## Examples
   ```
   iex> use Dreamy
-  ...> either(:l, :r)
+  ...> left(:l)
   ...> |> map_left(&Atom.to_string/1)
-  {Dreamy.Either, "l", :r}
+  {Dreamy.Either, "l", nil}
+
+  iex> use Dreamy
+  ...> right(:r)
+  ...> |> map_left(&Atom.to_string/1)
+  {Dreamy.Either, nil, :r}
+
+  iex> use Dreamy
+  ...> neither()
+  ...> |> map_left(&Atom.to_string/1)
+  {Dreamy.Either, nil, nil}
   ```
   """
-  @spec map_left(t(l, r), (l -> res)) :: t(res, r) when l: var, r: var, res: var
-  def map_left({__MODULE__, l, r}, fun), do: either(fun.(l), r)
+  @spec map_left(left(l), (l -> res)) :: left(res) when l: var, res: var
+  @spec map_left(right(r), (nil -> term())) :: right(r) when l: var, r: var
+  def map_left(v, _) when is_neither(v), do: neither()
+  def map_left({__MODULE__, nil, r}, _), do: right(r)
+  def map_left({__MODULE__, l, nil}, fun), do: left(fun.(l))
 
   @doc """
   Applies the function to the right value
@@ -113,13 +126,26 @@ defmodule Dreamy.Either do
   ## Examples
   ```
   iex> use Dreamy
-  ...> either(:l, :r)
+  ...> right(:r)
   ...> |> map_right(&Atom.to_string/1)
-  {Dreamy.Either, :l, "r"}
+  {Dreamy.Either, nil, "r"}
+
+  iex> use Dreamy
+  ...> left(:l)
+  ...> |> map_right(&Atom.to_string/1)
+  {Dreamy.Either, :l, nil}
+
+  iex> use Dreamy
+  ...> neither()
+  ...> |> map_right(&Atom.to_string/1)
+  {Dreamy.Either, nil, nil}
   ```
   """
-  @spec map_right(t(l, r), (r -> res)) :: t(l, res) when l: var, r: var, res: var
-  def map_right({__MODULE__, l, r}, fun), do: either(l, fun.(r))
+  @spec map_right(right(r), (r -> res)) :: right(res) when r: var, res: var
+  @spec map_right(left(l), (nil -> term())) :: left(l) when l: var, r: var
+  def map_right(v, _) when is_neither(v), do: neither()
+  def map_right({__MODULE__, l, nil}, _), do: left(l)
+  def map_right({__MODULE__, nil, r}, fun), do: right(fun.(r))
 
   @doc """
   Applies the function to the left value and flattens
@@ -127,13 +153,26 @@ defmodule Dreamy.Either do
   ## Examples
   ```
   iex> use Dreamy
-  ...> either(:l, :r)
+  ...> left(:l)
   ...> |> flat_map_left(fn _ -> left(:new_left) end)
-  {Dreamy.Either, :new_left, :r}
+  {Dreamy.Either, :new_left, nil}
+
+  iex> use Dreamy
+  ...> right(:r)
+  ...> |> flat_map_left(fn _ -> left(:new_left) end)
+  {Dreamy.Either, nil, :r}
+
+  iex> use Dreamy
+  ...> neither()
+  ...> |> flat_map_left(&Atom.to_string/1)
+  {Dreamy.Either, nil, nil}
   ```
   """
-  @spec flat_map_left(t(l, r), (l -> t(res, term()))) :: t(res, r) when l: var, r: var, res: var
-  def flat_map_left({__MODULE__, l, r}, fun), do: l |> fun.() |> get_left() |> either(r)
+  @spec flat_map_left(left(l), (l -> left(res))) :: left(res) when l: var, res: var
+  @spec flat_map_left(right(r), (nil -> left(term()))) :: right(r) when r: var
+  def flat_map_left(v, _) when is_neither(v), do: neither()
+  def flat_map_left({__MODULE__, nil, r}, _), do: right(r)
+  def flat_map_left({__MODULE__, l, nil}, fun), do: l |> fun.() |> get_left() |> left()
 
   @doc """
   Applies the function to the right value and flattens
@@ -141,16 +180,30 @@ defmodule Dreamy.Either do
   ## Examples
   ```
   iex> use Dreamy
-  ...> either(:l, :r)
+  ...> right(:r)
   ...> |> flat_map_right(fn _ -> right(:new_right) end)
-  {Dreamy.Either, :l, :new_right}
+  {Dreamy.Either, nil, :new_right}
+
+  iex> use Dreamy
+  ...> left(:l)
+  ...> |> flat_map_right(fn _ -> right(:new_right) end)
+  {Dreamy.Either, :l, nil}
+
+  iex> use Dreamy
+  ...> neither()
+  ...> |> flat_map_right(&Atom.to_string/1)
+  {Dreamy.Either, nil, nil}
   ```
   """
-  @spec flat_map_right(t(l, r), (r -> t(term(), res))) :: t(l, res) when l: var, r: var, res: var
-  def flat_map_right({__MODULE__, l, r}, fun) do
+  @spec flat_map_right(right(r), (r -> right(res))) :: right(res) when r: var, res: var
+  @spec flat_map_right(left(l), (nil -> right(term()))) :: left(l) when l: var
+  def flat_map_right(v, _) when is_neither(v), do: neither()
+  def flat_map_right({__MODULE__, l, nil}, _), do: left(l)
+
+  def flat_map_right({__MODULE__, nil, r}, fun) do
     res = r |> fun.() |> get_right()
 
-    either(l, res)
+    right(res)
   end
 
   @doc """
@@ -169,7 +222,8 @@ defmodule Dreamy.Either do
   {Dreamy.Option, :empty}
   ```
   """
-  @spec to_option_left(t(l, term())) :: Dreamy.Types.option(l) | Dreamy.Option.empty() when l: var
+  @spec to_option_left(left(l)) :: Dreamy.Types.option(l) when l: var
+  @spec to_option_left(right(term())) :: Option.empty()
   def to_option_left(v) when is_left(v),
     do:
       v
@@ -194,8 +248,8 @@ defmodule Dreamy.Either do
   {Dreamy.Option, :empty}
   ```
   """
-  @spec to_option_right(t(term(), r)) :: Dreamy.Types.option(r) | Dreamy.Option.empty()
-        when r: var
+  @spec to_option_right(right(r)) :: Dreamy.Types.option(r) when r: var
+  @spec to_option_right(left(term())) :: Option.empty()
   def to_option_right(v) when is_right(v),
     do:
       v

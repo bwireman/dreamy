@@ -16,13 +16,13 @@ defmodule Dreamy do
     @moduledoc "Useful Type definitions"
 
     @typedoc "Type union of `t` & `nil`"
-    @type nullable(t) :: t | nil
+    @type nullable(v) :: v | nil
 
     @typedoc "Type for documenting the value within an enumerable"
-    @type enumerable(_t) :: Enumerable.t()
+    @type enumerable(_v) :: Enumerable.t()
 
     @typedoc "Monodic type that can hold a value"
-    @type option(t) :: Dreamy.Option.t(t)
+    @type option(v) :: Dreamy.Option.t(v)
 
     @typedoc "Monodic type for :ok, :error tuples"
     @type result(ok, err) :: Dreamy.Result.t(ok, err)
@@ -212,7 +212,8 @@ defmodule Dreamy do
   "Hello!"
   ```
   """
-  @spec conditional_apply(term(), boolean(), function()) :: term()
+  @spec conditional_apply(v, false, function()) :: v when v: var
+  @spec conditional_apply(v, true, (v -> res)) :: res when v: var, res: var
   def conditional_apply(val, false, _), do: val
   def conditional_apply(val, true, fun), do: fun.(val)
 end

@@ -5,7 +5,7 @@ defmodule Dreamy.Option do
 
   import Dreamy
 
-  @type t(t) :: {__MODULE__, t} | empty()
+  @type t(v) :: {__MODULE__, v} | empty()
   @type empty() :: {__MODULE__, :empty}
 
   @doc """
@@ -44,7 +44,7 @@ defmodule Dreamy.Option do
   {Dreamy.Option, "Hello World"}
   ```
   """
-  @spec option(Dreamy.Types.nullable(t)) :: t(t) when t: var
+  @spec option(Dreamy.Types.nullable(v)) :: t(v) when v: var
   def option(nil), do: @empty
   def option(val), do: {__MODULE__, val}
 
