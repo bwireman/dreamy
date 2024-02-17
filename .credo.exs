@@ -160,7 +160,6 @@
           {Credo.Check.Warning.UnusedStringOperation, []},
           {Credo.Check.Warning.UnusedTupleOperation, []},
           {Credo.Check.Warning.WrongTestFileExtension, []},
-          {Credo.Check.Readability.Specs, []},
 
           #
           ## Custom
@@ -207,6 +206,7 @@
           {Credo.Check.Warning.LeakyEnvironment, []},
           {Credo.Check.Warning.MapGetUnsafePass, []},
           {Credo.Check.Warning.MixEnv, []},
+          {Credo.Check.Readability.Specs, []},
           {Credo.Check.Warning.UnsafeToAtom, []}
 
           # {Credo.Check.Refactor.MapInto, []},
