@@ -15,6 +15,7 @@ defmodule Dreamy.MixProject do
         main: "readme"
       ],
       name: "dreamy",
+      compilers: [:yecc] ++ Mix.compilers(),
       description: description(),
       source_url: "https://github.com/bwireman/dreamy",
       homepage_url: "https://hexdocs.pm/dreamy/readme.html",
@@ -40,6 +41,7 @@ defmodule Dreamy.MixProject do
       {:file_system, "~> 1.0.0", only: [:dev, :test], override: true},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false}
     ]
 
